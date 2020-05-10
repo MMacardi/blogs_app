@@ -1,0 +1,7 @@
+Django~=3.0.4
+
+django-crispy-forms~=1.9.0
+
+Pillow~=7.0.0
+django-cleanup
+django-simple-captcha

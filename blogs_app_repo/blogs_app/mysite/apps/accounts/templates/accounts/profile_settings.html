@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+  #asterisk{
+    float: right;
+  }
+  
+  #info{
+    font-size: 20px;
+  }
+
+</style>
+<title>{{ user.username }}</title>
+
+    <div class="content-section">
+    <div class="media">
+      <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
+      <div class="media-body">
+        <small class="text-muted" id="asterisk">*pre-view</small>
+        <h2 class="account-heading" id='username_profile'>{{ user.username }}</h2>
+        <p class="text-secondary" id="info">{{ user.profile.info }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Profile Settings</legend>
+              {{ u_form|crispy }}
+              {{ p_form|crispy }}
+          </fieldset>
+          <div class="form-group">
+              <button class="btn btn-outline-info" type="submit" id="update">Update</button>
+          </div>
+      </form>                                 
+  </div>  
+{% endblock %}

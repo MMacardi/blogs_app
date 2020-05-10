@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/main.css' %}">
+
+    <!-- % if article.article_title %
+        <title>{{ article.article_title }}</title>
+    % if user.username %
+        <title>{{user.username}}</title>
+    % else %
+        <title>Articles</title>
+    % endif % -->
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="{% url 'articles:articles_home' %}">Articles</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{% url 'articles:articles_home' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'articles:articles_about' %}">About us</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if user.is_authenticated %}
+              <a class="nav-item nav-link" href="{% url 'articles:create_article' %}">Create Post</a>
+              <a class="nav-item nav-link" href="{% url 'articles:user_articles' user.username %}" id='username_top'>My profile</a>
+              <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+              {% else %}
+              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-item nav-link" href="{% url 'signup' %}">Sighup</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% if messages %}
+          {% for message in messages %}
+              {% if not message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                  {{ message }}
+                </div>
+              {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger" role="alert">
+                  ❌ &nbsp;{{ message }}</div>
+              {% endif %}
+          {% endfor %}
+          {% endif %}
+
+          {% block content %}
+          {% endblock %}
+        </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>Our Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light"><a href="{% url 'articles:list_rubrics' %}">Rubrics</a></li>
+                {% if user.is_authenticated %}
+                  <li class="list-group-item list-group-item-light">⚙️<a href="{% url 'profile_settings' %}" class="ml-2">Settings</a></li>
+                {% else %}
+                  <li class="list-group-item list-group-item-light">Nothing</li>
+                {% endif %}
+                <li class="list-group-item list-group-item-light">Calendar</li>
+                <li class="list-group-item list-group-item-light">etc.</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+        <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/slugify.js' %}"> </script>
+    <script src="{% static 'js/profile_for_others.js' %}"> </script>
+    <script>
+      // const firstLetterUpperCase = names => {
+      //   let output = `${names.charAt(0).toUpperCase() 
+      //                           + names.slice(1)}`;
+      //   return output;
+      //   };
+      // $(function(){
+    
+      //   let username = "{{ view.kwargs.username }}";//$('#id_username').val();
+        
+      //   $('.title').append(firstLetterUpperCase(username));
+        
+      //   });  
+      </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+  a:hover{
+    text-decoration: none;
+    color: #444444;
+  }
+  .new_article{
+    float: right;
+    font-size: 20px;
+  }
+  .img_article {
+    max-width: 90%;
+    max-height: 700px;
+    position: relative;
+  }
+  
+  .detail_options{
+    visibility: hidden;
+    float: right;
+    margin-right: 5px;
+  }
+
+  .options{
+    float: right;
+    /* margin-right: 30px; */
+  }
+
+  /* .media:hover{
+    visibility: hidden;
+  } */
+
+  .media:hover .detail_options{
+    visibility:visible;
+  }
+
+  #update{
+    margin-left: 3px;
+  }
+  
+  .no_comments{
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 25px;
+  }
+  #comment_block{
+    word-wrap:break-word;
+  };
+  </style>
+<script>
+
+ </script>
+<title>{{ article.article_title }}</title>
+
+<h2>{{article.article_title}}</h2>
+
+
+<p>{{article.article_text}}</p>
+
+<span><em>Posted by <a class="mr-2" href="{% url 'articles:user_articles' article.author_article.username %}">
+  {{ article.author_article }}</a>in {{article.pub_date}}</em></span>
+  {% if article.was_published_recently %}
+    <strong class='new_article'>New article!</strong>
+  {% endif %}
+{% if article.rubric.rubric_name %}
+<br>
+<small class="text-muted">More articles with rubric
+
+  <a href="{% url 'articles:by_rubric' article.rubric.rubric_slug %}">{{article.rubric.rubric_name}}</a>
+
+</small>
+{% endif %}
+{% if article.image %}
+<div class="item">
+<br>
+  <img src="{{ article.image.url }}" class="img_article">
+<br>
+</div>
+{% endif %}
+<br>
+
+{% if article.author_article == user %}
+  <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'articles:article_delete' article.slug %}">
+    Delete</a>
+  <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'articles:article_update' article.slug %}">
+    Update</a>
+{% endif %}
+
+
+{% if last_comments_list %}
+  {% for comment in last_comments_list %}
+  <hr>
+  <div class="media">
+    <img class="rounded-circle article-img" src="{{ comment.author_comment.profile.image.url }}">
+
+      <div class="media-body">
+      <p id="comment_block">{{comment.comment_text}}</p>
+
+      <div class="mr-2" class="article-metadata"><a href="{% url 'articles:user_articles' comment.author_comment.username %}">{{comment.author_comment}}</a>
+        <small>left a comment at <em>{{comment.pub_date}}</em>
+        {% if comment_update %}
+          (upd.)
+        {% endif %}
+        </small>
+        <span class="options">
+          {% if comment.author_comment == user %}
+          <!-- <button type="submit" class="btn btn-outline-primary btn-sm mt-1 mb-1" id='three_dots'>⋮</button> -->
+          <span class="detail_options">
+            <a class="btn btn-outline-danger btn-sm mt-1 mb-1" id="delete" href="{% url 'articles:comment_delete' comment.id %}">
+              ❌</a>
+            <a class="btn btn-outline-info btn-sm mt-1 mb-1" id="update" href="{% url 'articles:comment_update' comment.id %}">
+              ✍️</a>
+          {% endif %}
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  
+    {% endfor %}
+{% else %}
+<p class="no_comments">
+  No comments found! Be first! =)
+</p>
+{% endif %}
+<hr>
+
+<br>
+
+<form method="POST" class="comment_create">
+  {% csrf_token %}
+  <fieldset class="form-group">
+      {{ comment_form|crispy }}
+  </fieldset>
+  <div class="form-group">
+      <button class="btn btn-outline-info" type="submit" id="comment_button">Comment</button>
+  </div>
+</form>
+
+
+<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+<script>
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  let comment_block = document.getElementById("comment_block");
+  comment_block.style.maxWidth = "300px";
+ }
+else{
+  document.getElementById("comment_block").style.maxWidth = "650px";
+  };
+
+$(() => {
+  $('#id_comment_text').on('keypress', function(e) {
+    if (e.keyCode == 13) {
+    $('#comment_button').click();
+    };
+  });
+});
+</script>
+
+{% endblock %}
+<!-- <script>
+$(() => {
+  $('#id_comment_text').on('keypress', function(e) {
+    if (e.keyCode == 13) {
+      const newTask = $(this).val();
+      if (newTask) {
+        $('#comment_block').append(`<p>${newTask}</p>`);
+        $(this).val("");
+      }
+    }
+  });
+});
+$('#id_comment_text').on('keypress', function (event) {
+    if (event.keyCode == 13) {
+        let content = this.value;  
+        let caret = getCaret(this);          
+        this.value = content.substring(0, caret - 1) + "\n" + content.substring(caret, content.length);
+        event.stopPropagation();
+        
+    };
+});
+</script>
+<form class=" " action="% url 'articles:leave_comment' slug=article.slug %" method="post">
+
+  {% csrf_token %}
+
+  <input type="text" required placeholder="Your name" name="name" ><br>
+  <textarea name="text" required=" " placeholder="Text of comment" rows="10" cols="55">
+  </textarea><br>
+
+  <button type="submit" name="button">Leave comment</button>
+
+</form>-->
+
