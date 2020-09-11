@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+    #id_slug{
+        border: none;
+        display: inline;
+        font-family: inherit;
+        font-size: inherit;
+        padding: none;
+        /* pointer-events: none; */
+    };
+
+
+</style>
+<title>Create an Article !</title>
+    
+    <div class="content-section">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="mb-4">Blog Post</legend>
+                {{ form|crispy }}
+            </fieldset>
+            {% if article.image %}
+            <b style="font-size: 1.4rem;">Currently:</b><br><img src="{{ article.image.url }}" class="img_article"><br><br>
+            {% endif %}
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Post</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script>
+        let input_text = document.querySelector("#div_id_article_text > div")
+        $(input_text).append("<button type=button class=emoji id=emoji2 style=top:-30px;right:5px;float:right;position:relative;>😎</button>")
+    </script>
+    <script src="{% static 'js/fgEmojiPicker.js' %}"></script>
+    <script>
+      new FgEmojiPicker({
+            trigger: ['#emoji2'],
+            position: ['bottom', 'right'],
+            dir: '/static/js/',
+            emit(obj, triggerElement) {
+                const emoji = obj.emoji;
+                document.querySelector('#id_article_text').value += emoji;
+                
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        /*new new FgEmojiPicker({
+            trigger: ['#emoji2', '#id_article_text'],
+            position: ['bottom', 'right'],
+            dir: '/static/js/',
+            emit(obj, triggerElement) {
+                const emoji = obj.emoji;
+                document.querySelector('#id_article_text').value += emoji;
+                
+            }
+        });
+        new FgEmojiPicker({
+            trigger: ['#emoji1'],
+            position: ['bottom', 'right'],
+            dir: '/static/js/',
+            emit(obj, triggerElement) {
+                const emoji = obj.emoji;
+                document.querySelector('#id_article_title').value += emoji;
+            }
+        });*/
+    </script>
+    <script>
+        // $('.fg-emoji-picker:gt(0)').remove();
+    </script>
+    <script>
+        let image = document.querySelector("input[type=file]"); 
+        image.setAttribute("multiple", "True");
+        image.style = "display: none; position:absolute";  
+        let currently = document.querySelector("#div_id_image > div")
+        currently.style = "display:none";
+        let label = document.querySelector("#div_id_image > label");
+        $(label).html("<span style=color:var(--select-image)><i class=material-icons>add_photo_alternate&nbsp</i>Select an image</span>");
+        label.className = "btn btn-secondary";
+        label.style = "margin-bottom: -15px; font-size: 20px;";
+        // let allDiv = document.querySelector("#div_id_image");
+        // $(allDiv).append("<span style='margin-bottom:-10px'>Image</span>")
+    </script>
+    <script src="{% static 'js/slugify.js' %}"></script>
+{% endblock %}
+

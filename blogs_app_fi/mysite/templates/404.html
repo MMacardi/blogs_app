@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<title>Error</title>
+<style>
+
+
+a:hover{
+  color: #333;
+  text-decoration: none;
+};
+
+</style>
+{% if user.is_authenticated %}
+<h1 align="center">{{ user.username }}... Sorry ! But page not Found. Error 404. <br>
+  ):
+</h1>
+{% else %}
+<h1 align="center">Sorry ! But page not Found. Error 404. <br>
+  ):
+  </h1>
+{% endif %}
+<br>
+    <span class="mt-8" style="font-size: 20px;">Maybe you want to go to <a href="{% url 'articles:articles_home' %}">homepage</a>?</span>
+
+{% endblock %}

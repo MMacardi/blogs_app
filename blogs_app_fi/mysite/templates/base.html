@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/main.css' %}" id="theme-link">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/dark.css' %}"> -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    
+    <link rel="icon" href="{% static 'assets/snake.ico'%}" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+<style>
+    
+  
+</style>
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="{% url 'articles:articles_home' %}">Articles</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{% url 'articles:articles_home' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'articles:articles_about' %}">About us</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav" id="header">
+              {% if user.is_authenticated %}
+              <a class="nav-item nav-link" href="{% url 'articles:create_article' %}">Create Post</a>
+              <a class="nav-item nav-link" href="{% url 'articles:user_articles' user.username %}" id='username_top'>My profile</a>
+              <!-- <a class="nav-item nav-link" id="logout" href="{% url 'logout' %}">Logout</a> -->
+              {% else %}
+              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-item nav-link" href="{% url 'signup' %}">Sighup</a>
+              {% endif %}
+              <!-- <a style="visibility: hidden;">asd</a> -->
+              
+            </div>
+            
+          </div>
+        </div>
+        <button id="theme-button" onclick="toggleTheme()" style="position: absolute; right:1px;"></button>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% if messages %}
+          {% for message in messages %}
+              {% if not message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                  {{ message }}
+                </div>
+              {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger" role="alert">
+                  ❌ &nbsp;{{ message }}</div>
+              {% endif %}
+          {% endfor %}
+          {% endif %}
+          
+          {% block content %}
+          {% endblock %}
+          
+        </div>
+        <div class="col-md-4">
+          <!-- <div class="content-section"></div>
+            <h3>Our Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.</p>
+              <div class="col-4"> -->
+                  <aside class="list-group" id="sidebar" role="tablist">
+                    <a class="list-group-item list-group-item-action" id="list-item" href="{% url 'articles:list_rubrics' %}" role="tab">Rubrics</a>
+                    {% if user.is_authenticated %}
+                    <a class="list-group-item list-group-item-action" id="list-item" href="{% url 'profile_settings' %}" role="tab">Settings</a>
+                    <!-- <a class="list-group-item list-group-item-action" id="list-item"  href="{% url 'articles:user_articles' user.username %}" role="tab">Profile</a>
+                    <a class="list-group-item list-group-item-action" id="list-item" href="#list-messages" role="tab">Messages</a> -->
+                    {% endif %}
+                  </aside>
+                  
+                  <button id="scrollToTop"></button>
+        </div>
+      </div>
+    </main>
+        <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!--<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script src="{% static 'js/profile_for_others.js' %}"> </script>
+    <script src="{% static 'js/themes.js' %}"></script>
+
+    <script>
+      $(function() {
+    let btn = $('#scrollToTop');
+
+    $(window).scroll(function() {
+      if ($(window).scrollTop() > 300) {
+        btn.addClass('show');
+      } else {
+        btn.removeClass('show');
+      }
+    });
+
+    btn.on('click', function(e) {
+      e.preventDefault();
+      $('html, body').animate({scrollTop:0}, '300');
+    });
+  });
+
+    </script>
+
+    
+    
+    <script>
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        let header = document.getElementById("header");
+        let sidebar = document.getElementById("sidebar");
+        while (sidebar.hasChildNodes()) header.appendChild(sidebar.firstChild).className = "nav-item nav-link";
+        $(sidebar).remove();
+      }
+      $("#asterisk.text-muted").remove();
+      // $(function(){
+      //       let image = $("#id_image"); 
+      //       image.button = className = "btn btn-secondary";
+      //   });
+        // $("body").style = "margin: 5rem;"
+  // else{
+      //   document.getElementById("comment_block").style.maxWidth = "650px";
+      //   };
+      </script>
+      <script>
+      // function to set a given theme/color-scheme
+        function setTheme(themeName) {
+            localStorage.setItem('theme', themeName);
+            document.documentElement.className = themeName;
+        }
+        
+        // function to toggle between light and dark theme
+        function toggleTheme() {
+            if (localStorage.getItem('theme') === 'theme-dark') {
+                setTheme('theme-light');
+                if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                  $("#header").append($("#theme-button"));
+                  $("#theme-button").html("<span class='nav-item nav-link'>Light mode</span>");
+                }
+                else{ $("#theme-button").html("<span class='nav-item nav-link'>Light mode ☀️</span>")
+                }
+                }
+            else {
+                setTheme('theme-dark');
+                if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                $("#header").append($("#theme-button"));
+                $("#theme-button").html("<span class='nav-item nav-link'>Dark mode</span>");
+
+                  
+              }
+                else{ $("#theme-button").html("<span class='nav-item nav-link'>Dark mode 🌙</span>")
+                }
+                }
+            }
+        
+        
+        // Immediately invoked function to set the theme on initial load
+        (function () {
+            if (localStorage.getItem('theme') === 'theme-dark') {
+                setTheme('theme-dark');
+                if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                $("#header").append($("#theme-button"));
+                $("#theme-button").html("<span class='nav-item nav-link'>Dark mode</span>");
+                  
+              }
+                else{ $("#theme-button").html("<span class='nav-item nav-link'>Dark mode 🌙</span>")
+                }
+                }
+            
+                
+            else {
+                setTheme('theme-light');
+                if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                  $("#header").append($("#theme-button"));
+                  $("#theme-button").html("<span class='nav-item nav-link'>Light mode</span>");
+                }
+                else{ $("#theme-button").html("<span class='nav-item nav-link'>Light mode ☀️</span>")
+                }
+                }           
+        })();
+        </script>
+</body>
+</html>
